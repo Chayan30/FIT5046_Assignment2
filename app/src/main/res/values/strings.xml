@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">FIT_tut2</string>
+    <string name="username">Username/E-Mail</string>
+    <string name="password">Password</string>
+    <string name="button_signIn">Sign In</string>
+    <string name="button_signUp">Sign Up</string>
+    <string name="firstName">First Name</string>
+    <string name="surname">Surname</string>
+    <string name="gender">Gender</string>
+    <string name="dob">Date of Birth</string>
+    <string name="address">Address</string>
+    <string name="state">State</string>
+    <string name="postcode">Postcode</string>
+    <string-array name="course_array">
+        <item>MIT</item>
+        <item>MNS</item>
+        <item>MDS</item>
+        <item>MBIS</item>
+        <item>BIT(Hons)</item>
+    </string-array>
+</resources>
