@@ -1,0 +1,28 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/MovieName"
+        android:layout_width="0px"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="15sp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.5"
+        android:text="@string/movie_name" />
+    <TextView
+        android:id="@+id/UserRating"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="15sp"
+        android:layout_width="0px"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.5"
+        android:text="@string/user_rating" />
+    <TextView
+        android:id="@+id/ReleaseDate"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="15sp"
+        android:layout_width="0px"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.5"
+        android:text="@string/release_date" />
+</LinearLayout>

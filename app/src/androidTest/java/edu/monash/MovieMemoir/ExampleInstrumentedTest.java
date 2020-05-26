@@ -1,4 +1,4 @@
-package edu.monash.fit_tut2;
+package edu.monash.MovieMemoir;
 
 import android.content.Context;
 
@@ -22,6 +22,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
-        assertEquals("edu.monash.fit_tut2", appContext.getPackageName());
+        assertEquals("edu.monash.MovieMemoir", appContext.getPackageName());
     }
 }

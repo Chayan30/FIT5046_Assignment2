@@ -5,7 +5,7 @@
     android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context="edu.monash.MovieMemoir.MainActivity">
 
 
     <com.google.android.material.textfield.TextInputLayout
@@ -78,18 +78,6 @@
         android:layout_marginTop="296dp"
         android:text="@string/button_signUp"
         app:layout_constraintStart_toEndOf="@+id/signInButton"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <CheckBox
-        android:id="@+id/checkBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="96dp"
-        android:layout_marginTop="248dp"
-        android:layout_marginEnd="182dp"
-        android:text="Show Password"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

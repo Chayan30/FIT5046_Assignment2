@@ -1,18 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="edu.monash.fit_tut2">
+    package="edu.monash.MovieMemoir" >
+
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
-        android:usesCleartextTraffic="true"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".Register"
-            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"></activity>
-        <activity android:name=".MainActivity">
+        android:theme="@style/Theme.AppCompat"
+        android:usesCleartextTraffic="true" >
+        <activity
+            android:name=".Home"
+            android:label="@string/title_activity_home"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+        <activity
+            android:name=".MovieInfoView"
+            android:theme="@style/Theme.MaterialComponents" >
+        </activity>
+        <activity
+            android:name=".Register"
+            android:theme="@style/Theme.MaterialComponents" />
+        <activity android:name=".MainActivity"
+            android:theme="@style/Theme.MaterialComponents">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

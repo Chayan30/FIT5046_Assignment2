@@ -1,4 +1,4 @@
-package edu.monash.fit_tut2;
+package edu.monash.MovieMemoir;
 
 import org.junit.Test;
 
