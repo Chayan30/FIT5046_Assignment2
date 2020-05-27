@@ -1,5 +1,6 @@
 package edu.monash.MovieMemoir;
 
+import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -8,7 +9,9 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -21,11 +24,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Date;
 import java.util.Objects;
 
 import edu.monash.MovieMemoir.HttpRequests;
 import edu.monash.MovieMemoir.R;
+import edu.monash.MovieMemoir.database.WatchlistDatabase;
+import edu.monash.MovieMemoir.entity.Watchlist;
 import edu.monash.MovieMemoir.ui.movieSearch.ListAdapter;
+
+import static edu.monash.MovieMemoir.R.*;
 
 public class MovieInfoView extends AppCompatActivity {
     private View root;
@@ -36,23 +44,44 @@ public class MovieInfoView extends AppCompatActivity {
     TextView text_director;
     TextView text_plot;
     ImageView img_poster;
+    RatingBar ratingBar;
+    Button addWatchlist;
+    String title;
+    String ryear;
+    WatchlistDatabase watchlistDatabase=null;
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_movie_info);
-        text_genre = findViewById(R.id.genre_info);
-        text_cast = findViewById(R.id.cast_info);
-        text_rel_date = findViewById(R.id.rel_date_info);
-        text_country = findViewById(R.id.country_info);
-        text_director = findViewById(R.id.director_info);
-        text_plot = findViewById(R.id.plot_info);
-        img_poster = findViewById(R.id.imageView_poster);
-        String title = getIntent().getStringExtra("title");
+        setContentView(layout.activity_movie_info);
+        watchlistDatabase = WatchlistDatabase.getInstance(this);
+        text_genre = findViewById(id.genre_info);
+        text_cast = findViewById(id.cast_info);
+        text_rel_date = findViewById(id.rel_date_info);
+        text_country = findViewById(id.country_info);
+        text_director = findViewById(id.director_info);
+        text_plot = findViewById(id.plot_info);
+        img_poster = findViewById(id.imageView_poster);
+        ratingBar = findViewById(id.ratingBar);
+        title = getIntent().getStringExtra("title");
+        checkWatchlist checkasyncTask = new checkWatchlist();
+        checkasyncTask.execute();
         getSupportActionBar().setTitle(title); // for set actionbar title
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         String request = "?t=" + title;
         getMovieInfo movieinfo = new getMovieInfo();
         movieinfo.execute(request);
+        addWatchlist = findViewById(id.button_add_watch);
+        addWatchlist.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceAsColor")
+            @Override
+            public void onClick(View v) {
+                addWatchlist asyntask = new addWatchlist();
+                asyntask.execute();
+                addWatchlist.setClickable(false);
+                addWatchlist.setText(string.added_watchlist);
+                addWatchlist.setBackgroundColor(color.colorPrimary);
+            }
+        });
     }
     private class getMovieInfo extends AsyncTask<String, Void, JSONObject> {
         @Override
@@ -60,17 +89,46 @@ public class MovieInfoView extends AppCompatActivity {
             return HttpRequests.httpMovieGetRequests(params[0]);
         }
 
+        private float getRating(float rating)
+        {
+            float ratings = 0;
+            if(rating < 1)
+                ratings = 0;
+            else if (rating < 1.9)
+                ratings = (float) 0.5;
+            else if (rating < 2.8)
+                ratings = 1;
+            else if (rating < 3.7)
+                ratings = (float) 1.5;
+            else if (rating < 4.6)
+                ratings = 2;
+            else if (rating < 5.5)
+                ratings = (float) 2.5;
+            else if (rating < 6.4)
+                ratings = 3;
+            else if (rating < 7.3)
+                ratings = (float) 3.5;
+            else if (rating < 8.2)
+                ratings = 4;
+            else if (rating < 9.1)
+                ratings = (float) 4.5;
+            else
+                ratings = 5;
+            return ratings;
+        }
+
         @Override
         protected void onPostExecute(JSONObject response) {
             //String responseStatus = response.getString("status");
             //if(Integer.parseInt(responseStatus) == 200) {
             String genre = null;
-            String ryear = null;
             String poster = null;
             String cast = null;
             String country = null;
             String director = null;
             String plot = null;
+            String rating1 = null;
+            float rating = 0;
             try {
                 genre = response.getString("Genre");
                 ryear = response.getString("Year");
@@ -79,6 +137,9 @@ public class MovieInfoView extends AppCompatActivity {
                 country = response.getString("Country");
                 director = response.getString("Director");
                 plot = response.getString("Plot");
+                rating1 = response.getString("imdbRating");
+                rating = Float.parseFloat(rating1);
+                rating = getRating(rating);
                 Log.d("Genre", genre);
                 Log.d("Year", ryear);
                 Log.d("Poster", poster);
@@ -91,12 +152,45 @@ public class MovieInfoView extends AppCompatActivity {
             text_director.setText(director);
             text_rel_date.setText(ryear);
             text_plot.setText(plot);
+            ratingBar.setRating(rating);
             Picasso.get()
                     .load(poster)
-                    .placeholder(R.mipmap.ic_launcher)
+                    .placeholder(mipmap.ic_launcher)
                     .resize(200, 200)
                     .centerInside()
                     .into(img_poster);
+        }
+    }
+    private class addWatchlist extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            Date cur_date = new Date();
+            Watchlist watchlist = new Watchlist(title,ryear,cur_date.toString());
+            long watchId = watchlistDatabase.watchlistDao().insert(watchlist);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void response) {
+        }
+    }
+    private class checkWatchlist extends AsyncTask<Void, Void, Void> {
+        @SuppressLint({"WrongThread", "ResourceAsColor"})
+        @Override
+        protected Void doInBackground(Void... params) {
+            Date cur_date = new Date();
+            Watchlist watchlist =  watchlistDatabase.watchlistDao().findByID(title);
+            if(watchlist != null)
+            {
+                addWatchlist.setClickable(false);
+                addWatchlist.setText(string.added_watchlist);
+                addWatchlist.setBackgroundColor(color.colorPrimary);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void response) {
         }
     }
     @Override

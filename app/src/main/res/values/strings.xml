@@ -32,7 +32,6 @@
 
     <string name="menu_home">Movie Memoir</string>
     <string name="menu_movieSearch">Movie Search</string>
-    <string name="menu_slideshow">Slideshow</string>
     <string name="home">Home</string>
     <string name="home_second">Home Second</string>
     <string name="movie_name">Movie Name</string>
@@ -48,5 +47,11 @@
     <string name="director">Director</string>
     <string name="country">Country</string>
     <string name="add_to_watchlist">Add to Watchlist</string>
+    <string name="add_to_memoir">Add to Memoir</string>
+    <string name="menu_watchlist">Watchlist</string>
+    <string name="added_watchlist">Added to Watchlist</string>
+    <string name="view">View</string>
+    <string name="delete">Delete</string>
+    <string name="user_add_datetime">User Add DateTime</string>
 
 </resources>

@@ -1,14 +1,14 @@
-package edu.monash.MovieMemoir.ui.slideshow;
+package edu.monash.MovieMemoir.ui.watchlist;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class SlideshowViewModel extends ViewModel {
+public class WatchlistViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
 
-    public SlideshowViewModel() {
+    public WatchlistViewModel() {
         mText = new MutableLiveData<>();
         mText.setValue("This is slideshow fragment");
     }

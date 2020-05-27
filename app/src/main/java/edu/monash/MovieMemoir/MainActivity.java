@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
             }
             else{
                 String errorMessage = response.getString("message");
-                    Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
             }
         } catch (Exception e){
             Log.e("Exception", "handlePostLogin " + e.toString());
