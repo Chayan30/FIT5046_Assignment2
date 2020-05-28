@@ -17,8 +17,8 @@ import static androidx.room.OnConflictStrategy.REPLACE;
 public interface WatchlistDAO {
     @Query("SELECT * FROM watchlist")
     LiveData<List<Watchlist>> getAll();
-    @Query("SELECT * FROM watchlist WHERE title = :title LIMIT 1")
-    Watchlist findByID(String title);
+    @Query("SELECT * FROM watchlist WHERE id = :id LIMIT 1")
+    Watchlist findByID(String id);
 
     @Insert
     void insertAll(Watchlist... watchlist);

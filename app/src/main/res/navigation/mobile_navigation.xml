@@ -9,35 +9,32 @@
         android:id="@+id/nav_home"
         android:name="edu.monash.MovieMemoir.ui.home.HomeFragment"
         android:label="@string/menu_home"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         tools:layout="@layout/fragment_home" >
 
-        <action
-            android:id="@+id/action_HomeFragment_to_HomeSecondFragment"
-            app:destination="@id/nav_home_second" />
-    </fragment>
-    <fragment
-        android:id="@+id/nav_home_second"
-        android:name="edu.monash.MovieMemoir.ui.home.LogoutFragment"
-        android:label="@string/home_second"
-        tools:layout="@layout/fragment_logout">
-        <action
-            android:id="@+id/action_HomeSecondFragment_to_HomeFragment"
-            app:destination="@id/nav_home" />
-
-        <argument
-            android:name="myArg"
-            app:argType="string" />
     </fragment>
 
     <fragment
-        android:id="@+id/nav_gallery"
+        android:id="@+id/nav_movie_search"
         android:name="edu.monash.MovieMemoir.ui.movieSearch.MovieSearchFragment"
         android:label="@string/menu_movieSearch"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         tools:layout="@layout/fragment_moviesearch" />
 
     <fragment
-        android:id="@+id/nav_slideshow"
+        android:id="@+id/nav_watchlist"
         android:name="edu.monash.MovieMemoir.ui.watchlist.WatchlistFragment"
         android:label="@string/menu_watchlist"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         tools:layout="@layout/fragment_watchlist" />
+    <fragment
+        android:id="@+id/nav_memoir"
+        android:name="edu.monash.MovieMemoir.MemoirFragment"
+        android:label="Memoirs"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout="@layout/fragment_memoir" />
 </navigation>

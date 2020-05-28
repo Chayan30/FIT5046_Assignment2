@@ -43,7 +43,7 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         ((ViewHolder) viewHolder).movie_name.setText(itemAdapter.getText());
         ((ViewHolder) viewHolder).rel_year.setText(itemAdapter.getText2());
         ((ViewHolder) viewHolder).uaddDate.setText(itemAdapter.getImage());
-        ((ViewHolder) viewHolder).movie_name.setOnClickListener(new View.OnClickListener() {
+        ((ViewHolder) viewHolder).itemView.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("ResourceAsColor")
             @Override
             public void onClick(View v) {

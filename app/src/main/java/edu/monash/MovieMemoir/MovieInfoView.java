@@ -1,6 +1,7 @@
 package edu.monash.MovieMemoir;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -48,6 +50,10 @@ public class MovieInfoView extends AppCompatActivity {
     Button addWatchlist;
     String title;
     String ryear;
+    String poster;
+    String Id;
+    Button addMemoir;
+    ProgressBar progressBarWaitMovieInfo;
     WatchlistDatabase watchlistDatabase=null;
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -63,14 +69,18 @@ public class MovieInfoView extends AppCompatActivity {
         img_poster = findViewById(id.imageView_poster);
         ratingBar = findViewById(id.ratingBar);
         title = getIntent().getStringExtra("title");
+        progressBarWaitMovieInfo = findViewById(id.progressBarWaitMovieInfo);
+        progressBarWaitMovieInfo.setVisibility(View.VISIBLE);
+        Id = getIntent().getStringExtra("id");
         checkWatchlist checkasyncTask = new checkWatchlist();
         checkasyncTask.execute();
         getSupportActionBar().setTitle(title); // for set actionbar title
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        String request = "?t=" + title;
+        String request = "?i=" + Id;
         getMovieInfo movieinfo = new getMovieInfo();
         movieinfo.execute(request);
-        addWatchlist = findViewById(id.button_add_watch);
+        addWatchlist = findViewById(R.id.button_add_watch);
+        addMemoir = findViewById(R.id.button_add_memoir);
         addWatchlist.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("ResourceAsColor")
             @Override
@@ -80,6 +90,13 @@ public class MovieInfoView extends AppCompatActivity {
                 addWatchlist.setClickable(false);
                 addWatchlist.setText(string.added_watchlist);
                 addWatchlist.setBackgroundColor(color.colorPrimary);
+            }
+        });
+        addMemoir.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addToMemoir asynctask = new addToMemoir();
+                asynctask.execute();
             }
         });
     }
@@ -122,7 +139,6 @@ public class MovieInfoView extends AppCompatActivity {
             //String responseStatus = response.getString("status");
             //if(Integer.parseInt(responseStatus) == 200) {
             String genre = null;
-            String poster = null;
             String cast = null;
             String country = null;
             String director = null;
@@ -159,13 +175,14 @@ public class MovieInfoView extends AppCompatActivity {
                     .resize(200, 200)
                     .centerInside()
                     .into(img_poster);
+            progressBarWaitMovieInfo.setVisibility(View.INVISIBLE);
         }
     }
     private class addWatchlist extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
             Date cur_date = new Date();
-            Watchlist watchlist = new Watchlist(title,ryear,cur_date.toString());
+            Watchlist watchlist = new Watchlist(title,ryear,cur_date.toString(), Id);
             long watchId = watchlistDatabase.watchlistDao().insert(watchlist);
             return null;
         }
@@ -174,12 +191,27 @@ public class MovieInfoView extends AppCompatActivity {
         protected void onPostExecute(Void response) {
         }
     }
+    private class addToMemoir extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void response) {
+            Intent intent = new Intent(MovieInfoView.this, AddToMemoir.class);
+            intent.putExtra("title", title);
+            intent.putExtra("ryear", ryear);
+            intent.putExtra("poster", poster);
+            startActivity(intent);
+        }
+    }
     private class checkWatchlist extends AsyncTask<Void, Void, Void> {
         @SuppressLint({"WrongThread", "ResourceAsColor"})
         @Override
         protected Void doInBackground(Void... params) {
             Date cur_date = new Date();
-            Watchlist watchlist =  watchlistDatabase.watchlistDao().findByID(title);
+            Watchlist watchlist =  watchlistDatabase.watchlistDao().findByID(Id);
             if(watchlist != null)
             {
                 addWatchlist.setClickable(false);

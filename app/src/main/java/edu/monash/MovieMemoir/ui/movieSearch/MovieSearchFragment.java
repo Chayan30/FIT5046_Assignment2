@@ -1,13 +1,18 @@
 package edu.monash.MovieMemoir.ui.movieSearch;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
@@ -21,6 +26,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import edu.monash.MovieMemoir.HttpRequests;
 import edu.monash.MovieMemoir.MovieInfoView;
@@ -31,9 +37,11 @@ public class MovieSearchFragment extends Fragment implements ListAdapter.Recycle
     private MovieSearchViewModel movieSearchViewModel;
     private RecyclerView mRecycleview;
     private List<ItemAdapter> mList = new ArrayList<>();
+    private List<String> idList;
     private ListAdapter mAdapter;
     private View root;
     private Boolean clear;
+    private ProgressBar progressBarWaitMovieList;
     public View onCreateView(@NonNull LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
 //        movieSearchViewModel =
@@ -48,31 +56,52 @@ public class MovieSearchFragment extends Fragment implements ListAdapter.Recycle
 //        });
         init();
         clear = false;
+        progressBarWaitMovieList = root.findViewById(R.id.progressBarWaitMovieList);
         final SearchView search = root.findViewById(R.id.search_movie);
         Button searchButton = root.findViewById(R.id.search_button);
+
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressBarWaitMovieList.setVisibility(View.VISIBLE);
                 if (clear)
                     mAdapter.clear();
+                idList = new ArrayList<>();
                 String name = search.getQuery().toString();
-                String sname = "?s=" + name;
-                getMovieList asynMovieList = new getMovieList();
-                asynMovieList.execute(sname);
-                clear = true;
+                if(!name.isEmpty()) {
+                    showSoftwareKeyboard(false);
+                    String sname = "?s=" + name;
+                    getMovieList asynMovieList = new getMovieList();
+                    asynMovieList.execute(sname);
+                    clear = true;
+                }
             }
         });
 
         return root;
     }
+    protected void showSoftwareKeyboard(boolean showKeyboard){
+        final Activity activity = getActivity();
+        final InputMethodManager inputManager = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
 
+        inputManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), showKeyboard ? InputMethodManager.SHOW_FORCED : InputMethodManager.HIDE_NOT_ALWAYS);
+    }
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
+        //hide keyboard when any fragment of this class has been detached
+        showSoftwareKeyboard(false);
+    }
 
     @Override
     public void onItemClick(int item) {
         ItemAdapter item1 = mList.get(item);
+        String id = idList.get(item);
         String title = item1.getText();
         Intent intent = new Intent(getActivity(), MovieInfoView.class);
         intent.putExtra("title", title);
+        intent.putExtra("id", id);
         startActivity(intent);
     }
 
@@ -89,6 +118,7 @@ public class MovieSearchFragment extends Fragment implements ListAdapter.Recycle
             String mname = null;
             String ryear = null;
             String poster = null;
+            String id = null;
             try {
                 int numResults = response.getInt("totalResults");
                 JSONArray searchResult = response.getJSONArray("Search");
@@ -98,10 +128,12 @@ public class MovieSearchFragment extends Fragment implements ListAdapter.Recycle
                     mname = temp.getString("Title");
                     ryear = temp.getString("Year");
                     poster = temp.getString("Poster");
+                    id = temp.getString("imdbID");
                     Log.d("Title", mname);
                     Log.d("Year",ryear);
                     Log.d("Poster",poster);
                     addList(mname,ryear,poster);
+                    idList.add(id);
                 }
                 adapter();
             } catch (JSONException e) {
@@ -124,6 +156,7 @@ public class MovieSearchFragment extends Fragment implements ListAdapter.Recycle
     private void adapter(){
         mAdapter = new ListAdapter(mList, getActivity(), this);
         mRecycleview.setAdapter(mAdapter);
+        progressBarWaitMovieList.setVisibility(View.INVISIBLE);
         mAdapter.notifyDataSetChanged();
     }
 

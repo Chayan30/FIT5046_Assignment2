@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
+
+    <TextView
+        android:id="@+id/genre_info_text"
+        android:layout_width="135dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="83dp"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/colorPrimaryDark"
+        app:layout_constraintStart_toEndOf="@+id/genre_text"
+        app:layout_constraintTop_toBottomOf="@+id/ratingBar_public_rating" />
+
+    <RatingBar
+        android:id="@+id/ratingBar_public_rating"
+        style="?android:attr/ratingBarStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="38dp"
+        android:layout_marginTop="4dp"
+        android:stepSize="0.5"
+        app:layout_constraintStart_toEndOf="@+id/public_rating_text"
+        app:layout_constraintTop_toBottomOf="@+id/ratingBar_user_rating" />
+
+    <TextView
+        android:id="@+id/user_opinion_info_text"
+        android:layout_width="135dp"
+        android:layout_height="55dp"
+        android:layout_marginStart="40dp"
+        android:textColor="@color/colorPrimaryDark"
+        app:layout_constraintStart_toEndOf="@+id/opinion_text"
+        app:layout_constraintTop_toBottomOf="@+id/cinema_info_text" />
+
+    <TextView
+        android:id="@+id/cinema_info_text"
+        android:layout_width="135dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:textColor="@color/colorPrimaryDark"
+        app:layout_constraintStart_toEndOf="@+id/postcode_text"
+        app:layout_constraintTop_toBottomOf="@+id/user_watch_date_info_text" />
+
+    <TextView
+        android:id="@+id/user_watch_date_info_text"
+        android:layout_width="135dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:textColor="@color/colorPrimaryDark"
+        app:layout_constraintStart_toEndOf="@+id/user_watch_date_text"
+        app:layout_constraintTop_toBottomOf="@+id/release_date_info_text" />
+
+    <TextView
+        android:id="@+id/release_date_info_text"
+        android:layout_width="135dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:textColor="@color/colorPrimaryDark"
+        app:layout_constraintStart_toEndOf="@+id/release_date_text"
+        app:layout_constraintTop_toBottomOf="@+id/movie_name_info_text" />
+
+    <ImageView
+        android:id="@+id/movie_image_memoir"
+        android:layout_width="140dp"
+        android:layout_height="205dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="?attr/selectableItemBackground" />
+
+    <TextView
+        android:id="@+id/movie_name_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/movie_name"
+        android:textColor="@color/colorPrimaryDark"
+        app:layout_constraintStart_toEndOf="@+id/movie_image_memoir"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/release_date_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Releasae Date"
+        android:textColor="@color/colorPrimaryDark"
+        app:layout_constraintStart_toEndOf="@+id/movie_image_memoir"
+        app:layout_constraintTop_toBottomOf="@+id/movie_name_text" />
+
+    <TextView
+        android:id="@+id/user_watch_date_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="User Watch Date"
+        android:textColor="@color/colorPrimaryDark"
+        app:layout_constraintStart_toEndOf="@+id/movie_image_memoir"
+        app:layout_constraintTop_toBottomOf="@+id/release_date_text" />
+
+    <TextView
+        android:id="@+id/postcode_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cinema Postcode"
+        android:textColor="@color/colorPrimaryDark"
+        app:layout_constraintStart_toEndOf="@+id/movie_image_memoir"
+        app:layout_constraintTop_toBottomOf="@+id/user_watch_date_text" />
+
+    <TextView
+        android:id="@+id/opinion_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="User Opinion"
+        android:textColor="@color/colorPrimaryDark"
+        app:layout_constraintStart_toEndOf="@+id/movie_image_memoir"
+        app:layout_constraintTop_toBottomOf="@+id/postcode_text" />
+
+    <TextView
+        android:id="@+id/genre_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:text="@string/genre"
+        android:textColor="@color/colorPrimaryDark"
+        app:layout_constraintStart_toEndOf="@+id/movie_image_memoir"
+        app:layout_constraintTop_toBottomOf="@+id/public_rating_text" />
+
+    <TextView
+        android:id="@+id/movie_name_info_text"
+        android:layout_width="135dp"
+        android:layout_height="28dp"
+        android:layout_marginStart="40dp"
+        android:autoSizeTextType="uniform"
+        android:autoSizeMaxTextSize="14sp"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/colorPrimaryDark"
+        app:layout_constraintStart_toEndOf="@+id/movie_name_text"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/user_rating_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:text="@string/user_rating"
+        android:textColor="@color/colorPrimaryDark"
+        app:layout_constraintStart_toEndOf="@+id/movie_image_memoir"
+        app:layout_constraintTop_toBottomOf="@+id/opinion_text" />
+
+    <TextView
+        android:id="@+id/public_rating_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Public Rating"
+        android:textColor="@color/colorPrimaryDark"
+        app:layout_constraintStart_toEndOf="@+id/movie_image_memoir"
+        app:layout_constraintTop_toBottomOf="@+id/user_rating_text" />
+
+    <RatingBar
+        android:id="@+id/ratingBar_user_rating"
+        style="?android:attr/ratingBarStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
+        android:stepSize="0.5"
+        app:layout_constraintStart_toEndOf="@+id/user_rating_text"
+        app:layout_constraintTop_toBottomOf="@+id/user_opinion_info_text" />
+</androidx.constraintlayout.widget.ConstraintLayout>

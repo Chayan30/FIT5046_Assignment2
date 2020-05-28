@@ -1,7 +1,9 @@
 package edu.monash.MovieMemoir.ui.watchlist;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.ClipData;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -45,6 +47,7 @@ public class WatchlistFragment extends Fragment implements ListAdapter.RecyclerV
     private WatchlistViewModel watchlistViewModel;
     private RecyclerView movieList;
     private List<ItemAdapter> mList = new ArrayList<>();
+    private List<String> IdList;
     private ListAdapter mAdapter;
     private View root;
     private Button deleteButton;
@@ -69,19 +72,60 @@ public class WatchlistFragment extends Fragment implements ListAdapter.RecyclerV
         movieList.setLayoutManager(new LinearLayoutManager(getActivity()));
         deleteButton = root.findViewById(R.id.delete_button);
         viewButton = root.findViewById(R.id.view_button);
-
+        IdList = new ArrayList<>();
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                deleteWatchList asyncTask = new deleteWatchList();
-                asyncTask.execute();
+                int selected = 0;
+                for (ItemAdapter item : mList) {
+                    if (item.isSelected()) {
+                        selected++;
+                    }
+                }
+                IdList = new ArrayList<>();
+                if( selected > 0) {
+                    new AlertDialog.Builder(getContext())
+                            .setTitle("Confirm Delete")
+                            .setMessage("Do you really want to Delete the selection?")
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setPositiveButton(android.R.string.no, null)
+                            .setNegativeButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    deleteWatchList asyncTask = new deleteWatchList();
+                                    asyncTask.execute();
+                                }
+                            }).show();
+                }
+                else {
+                    Toast.makeText(root.getContext(), "Please Select at least 1 item to Delete", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         viewButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewWatchList asyncTask = new viewWatchList();
-                asyncTask.execute();
+                String title = null;
+                int selected = 0;
+                String Id = null;
+                for (ItemAdapter item : mList) {
+                    if (item.isSelected()) {
+                        selected++;
+                        title = item.getText();
+                        Id = IdList.get(mList.indexOf(item));
+                    }
+                }
+                if(selected == 1)
+                {
+                    Intent intent = new Intent(getActivity(), MovieInfoView.class);
+                    intent.putExtra("title", title);
+                    intent.putExtra("id",Id);
+                    startActivity(intent);
+                }
+                else
+                {
+                    Toast.makeText(root.getContext(), "Please Select only 1 item to view", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         getWatchlist asyncTask = new getWatchlist();
@@ -111,16 +155,19 @@ public class WatchlistFragment extends Fragment implements ListAdapter.RecyclerV
                         String mname = null;
                         String uadddate = null;
                         String rdate = null;
+                        String Id = null;
                         for (int i = 0; i < watchlists.size(); i++) {
                             HashMap<String, String> map = new HashMap<>();
                             Watchlist temp = watchlists.get(i);
-                            mname = temp.getId();
+                            mname = temp.getTitle();
                             uadddate = temp.getAdd_date();
                             rdate = temp.getRel_date();
+                            Id = temp.getId();
                             map.put("Movie Name", mname);
                             map.put("User Add Date", uadddate);
                             map.put("Release Date", rdate);
                             addList(mname,rdate,uadddate);
+                            IdList.add(Id);
                         }
                         adapter();
                     }
@@ -162,36 +209,5 @@ public class WatchlistFragment extends Fragment implements ListAdapter.RecyclerV
                 mAdapter.clear();
         }
     }
-    @SuppressLint("StaticFieldLeak")
-    private class viewWatchList extends AsyncTask<Void, Void, Void>
-    {
-        @Override
-        protected Void doInBackground (Void...params) {
-            return null;
-        }
 
-        @Override
-        protected void onPostExecute(Void params)
-        {
-            String title = null;
-            int selected = 0;
-            for (ItemAdapter item : mList) {
-                if (item.isSelected()) {
-                    selected++;
-                    title = item.getText();
-                }
-            }
-            if(selected == 1)
-            {
-                Intent intent = new Intent(getActivity(), MovieInfoView.class);
-                intent.putExtra("title", title);
-                startActivity(intent);
-            }
-            else
-            {
-                Toast.makeText(root.getContext(), "Please Select only 1 item to view", Toast.LENGTH_SHORT).show();
-            }
-
-        }
-    }
 }

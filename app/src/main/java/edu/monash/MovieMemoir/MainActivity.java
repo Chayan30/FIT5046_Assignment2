@@ -4,6 +4,7 @@ package edu.monash.MovieMemoir;
 import androidx.appcompat.app.AppCompatActivity;
 
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -143,24 +144,28 @@ public class MainActivity extends AppCompatActivity {
         startActivity(new Intent(MainActivity.this, Home.class));
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class CheckUserLoginAsyncTask extends AsyncTask<Void, Void, String> {
         @Override
         protected String doInBackground(Void... objectArray) {
-            List<Person> p = personDb.personDao().getAll();
-            String id = null;
-            if (p != null)
-            {
-                for(Person per: p)
-                {
-                    id = per.getId();
+            String id = "";
+            try {
+                List<Person> p = personDb.personDao().getAll();
+                if (!p.isEmpty()) {
+                    for (Person per : p) {
+                        id = per.getId();
+                        //Log.d("id", id);
+                    }
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            Log.d("id", id);
             return id;
         }
         @Override
         protected void onPostExecute(String s) {
-            startActivity(new Intent(MainActivity.this, Home.class));
+            if (!s.isEmpty())
+                startActivity(new Intent(MainActivity.this, Home.class));
         }
     }
 

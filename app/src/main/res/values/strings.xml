@@ -53,5 +53,16 @@
     <string name="view">View</string>
     <string name="delete">Delete</string>
     <string name="user_add_datetime">User Add DateTime</string>
+    <string name="select_watch_date">Select Watch Date</string>
+    <string name="select_watch_time">Select Watch Time</string>
+    <string name="cinema_name">Cinema Name</string>
+    <string name="add_new_cinema">Add New Cinema</string>
+    <string name="opinion">Opinion</string>
+    <string name="memoir">Memoir</string>
+    <string-array name="sort_array">
+        <item>User Rating</item>
+        <item>Public Rating</item>
+        <item>User Watch Date</item>
+    </string-array>
 
 </resources>

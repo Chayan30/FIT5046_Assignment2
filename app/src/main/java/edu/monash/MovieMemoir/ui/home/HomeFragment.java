@@ -93,7 +93,7 @@ public class HomeFragment extends Fragment {
         }
         @Override
         protected void onPostExecute(Void s) {
-            String methodName = "findByPersonIdBestRatedCurrentYear/"+uid;
+            String methodName = "findByPersonIdandSameReleaseYearandUserWatchYear/"+uid;
             getMemoirUser asyncTask2 = new getMemoirUser();
             asyncTask2.execute(methodName);
         }
@@ -104,6 +104,7 @@ public class HomeFragment extends Fragment {
         protected JSONArray doInBackground (String...params){
             return HttpRequests.httpGetRequest("memoir", params[0]);
         }
+        @SuppressLint("NewApi")
         @Override
         protected void onPostExecute (JSONArray response){
             //String responseStatus = response.getString("status");
@@ -112,7 +113,7 @@ public class HomeFragment extends Fragment {
             String urating = null;
             String rdate = null;
             if(response != null) {
-                for (int i = 0; i < response.length(); i++) {
+                for (int i = 0; i < Integer.min(response.length(),5); i++) {
                     HashMap<String, String> map = new HashMap<String, String>();
                     JSONObject temp = null;
                     try {

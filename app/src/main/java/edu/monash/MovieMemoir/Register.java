@@ -23,6 +23,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -85,13 +86,13 @@ public class Register extends AppCompatActivity {
         final TextInputLayout Postcode = findViewById(R.id.PostcodeTextField);
         postcode = Postcode.getEditText();
         final DatePicker dobDatepicker = findViewById(R.id.datePickerDob);
+        dobDatepicker.setMaxDate(new Date().getTime());
         final Button register = findViewById(R.id.buttonRegister);
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String resource = "credential";
                 String methodPath = "userRegistration/";
-                String param = resource + " " + methodPath;
                 JSONObject registerPostDataObject = new JSONObject();
                 JSONObject registerData = new JSONObject();
                 email = String.valueOf(username.getText());
@@ -206,7 +207,7 @@ public class Register extends AppCompatActivity {
             surname.setError("Surname is required!");
             surname.requestFocus();
         }
-        if (isEmail(username) == false) {
+        if (!isEmail(username)) {
             username.setError("Enter valid email!");
             username.requestFocus();
         }
