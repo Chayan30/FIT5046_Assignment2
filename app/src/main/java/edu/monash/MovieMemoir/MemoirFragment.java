@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 
 import org.json.JSONArray;
@@ -50,6 +51,7 @@ public class MemoirFragment extends Fragment implements MemoirListAdapter.Recycl
     public MemoirFragment() {
         // Required empty public constructor
     }
+    private ProgressBar progressBar;
     private String mname = null;
     private String releaseDate = null;
     private String postcode = null;
@@ -71,6 +73,8 @@ public class MemoirFragment extends Fragment implements MemoirListAdapter.Recycl
         getUserMemoirs getasyncTask = new getUserMemoirs();
         getasyncTask.execute("findByPersonId/"+personId);
         sortButton = root.findViewById(R.id.button_sort);
+        progressBar = root.findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.VISIBLE);
         final Spinner sortSpinner = root.findViewById(R.id.spinner_sort);
         sortButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,6 +88,7 @@ public class MemoirFragment extends Fragment implements MemoirListAdapter.Recycl
                         }
 
                     });
+                    progressBar.setVisibility(View.VISIBLE);
                     adapter();
                 }
                 else if (sortSpinner.getSelectedItemPosition() == 1) {
@@ -95,6 +100,7 @@ public class MemoirFragment extends Fragment implements MemoirListAdapter.Recycl
                         }
 
                     });
+                    progressBar.setVisibility(View.VISIBLE);
                     adapter();
                 }
                 else if (sortSpinner.getSelectedItemPosition() == 2) {
@@ -109,6 +115,7 @@ public class MemoirFragment extends Fragment implements MemoirListAdapter.Recycl
                         }
 
                     });
+                    progressBar.setVisibility(View.VISIBLE);
                     adapter();
                 }
             }
@@ -233,5 +240,6 @@ public class MemoirFragment extends Fragment implements MemoirListAdapter.Recycl
         mAdapter = new MemoirListAdapter(mList, getActivity(), this);
         mRecycleview.setAdapter(mAdapter);
         mAdapter.notifyDataSetChanged();
+        progressBar.setVisibility(View.INVISIBLE);
     }
 }

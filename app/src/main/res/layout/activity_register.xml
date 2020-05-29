@@ -4,9 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="105dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -28,9 +31,9 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:inputType="number"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:inputType="number" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -104,6 +107,7 @@
                 android:layout_marginEnd="160dp"
                 android:hint="@string/password"
                 android:inputType="textPassword"
+                app:endIconMode="password_toggle"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.502"
                 app:layout_constraintStart_toStartOf="parent"
@@ -146,10 +150,9 @@
                 android:layout_height="35dp"
                 android:layout_marginStart="80dp"
                 android:layout_marginTop="32dp"
-                android:orientation="horizontal"
-                android:defaultFocusHighlightEnabled="true"
-                android:text="Gender"
                 android:checkedButton="@id/radioButtonMale"
+                android:defaultFocusHighlightEnabled="true"
+                android:orientation="horizontal"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/PasswordTextField">
 
@@ -189,11 +192,11 @@
             <DatePicker
                 android:id="@+id/datePickerDob"
                 android:layout_width="wrap_content"
-                android:layout_height="150dp"
-                android:layout_marginStart="72dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="44dp"
                 android:layout_marginTop="568dp"
                 android:calendarViewShown="false"
-                android:datePickerMode="spinner"
+                android:datePickerMode="calendar"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -203,18 +206,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="148dp"
                 android:layout_marginTop="20dp"
+                android:layout_marginBottom="19dp"
                 android:text="@string/register"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/datePickerDob" />
-
-            <TextView
-                android:id="@+id/textView3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="784dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
 
             <Spinner
                 android:id="@+id/spinnerState"

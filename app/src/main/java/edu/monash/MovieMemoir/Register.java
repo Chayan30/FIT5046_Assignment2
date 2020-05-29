@@ -49,7 +49,7 @@ public class Register extends AppCompatActivity {
         return pattern.matcher(password).matches();
     }
     EditText firstName;
-    String email;
+    private String email;
     String password1;
     String firstname;
     String surname1;
@@ -108,7 +108,7 @@ public class Register extends AppCompatActivity {
                 int month = dobDatepicker.getMonth() + 1;
                 int year = dobDatepicker.getYear();
                 dateOfBirth = ""+day+"-"+month+"-"+year;
-                checkDataEntered();
+                boolean error = checkDataEntered();
                 try{
                     registerData.put("email", email);
                     registerData.put("password", password1);
@@ -118,9 +118,11 @@ public class Register extends AppCompatActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                Register.RegisterAsyncTask addAsyncTask =  new Register.RegisterAsyncTask();
+                if(error == false) {
+                    Register.RegisterAsyncTask addAsyncTask = new Register.RegisterAsyncTask();
 
-                addAsyncTask.execute(registerPostDataObject);
+                    addAsyncTask.execute(registerPostDataObject);
+                }
             }
         });
     }
@@ -195,53 +197,59 @@ public class Register extends AppCompatActivity {
             }
         }
     }
-    void checkDataEntered()
+    boolean checkDataEntered()
     {
+        boolean error = false;
         if (isEmpty(firstName)) {
             //Toast t = Toast.makeText(getApplicationContext(), "You must enter first name to register!", Toast.LENGTH_SHORT);
             //t.show();
             firstName.setError("First Name is Required");
             firstName.requestFocus();
+            error = true;
         }
         if (isEmpty(surname)) {
             surname.setError("Surname is required!");
             surname.requestFocus();
+            error = true;
         }
         if (!isEmail(username)) {
             username.setError("Enter valid email!");
             username.requestFocus();
+            error = true;
         }
         if (isEmpty(password)) {
             password.setError("Password cannot be empty");
             password.requestFocus();
+            error = true;
         } else if (password.getText().length() < 6) {
-            password.setError("Password too short");
+            password.setError("Password too short, at least 6");
             password.requestFocus();
+            error = true;
         } else  if(!(validatePassword(password.getText().toString().trim()))){
             password.setError("Password Must Contain a lowercase, uppercase, Numeric and a special character");
             password.requestFocus();
+            error = true;
         }
         if (genderGroup.getCheckedRadioButtonId() == -1)
         {
             // no radio buttons are checked
             Toast.makeText(getApplicationContext(), "Please select Gender", Toast.LENGTH_SHORT).show();
             genderGroup.requestFocus();
-        }
-        else
-        {
-            // one of the radio buttons is checked
+            error = true;
         }
         if(isEmpty(address))
         {
             address.setError("Address is Required");
             address.requestFocus();
+            error = true;
         }
         if(isEmpty(postcode))
         {
             postcode.setError("Postcode is Required");
             postcode.requestFocus();
+            error = true;
         }
-
+    return error;
 
     }
     @Override

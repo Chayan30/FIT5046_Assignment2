@@ -59,10 +59,20 @@
     <string name="add_new_cinema">Add New Cinema</string>
     <string name="opinion">Opinion</string>
     <string name="memoir">Memoir</string>
+    <string name="cinema_postcode">Cinema Postcode</string>
+    <string name="report">Report</string>
     <string-array name="sort_array">
         <item>User Rating</item>
         <item>Public Rating</item>
         <item>User Watch Date</item>
+    </string-array>
+    <string-array name="bar_array">
+        <item>2015</item>
+        <item>2016</item>
+        <item>2017</item>
+        <item>2018</item>
+        <item>2019</item>
+        <item>2020</item>
     </string-array>
 
 </resources>

@@ -86,13 +86,14 @@ public class MovieSearchFragment extends Fragment implements ListAdapter.Recycle
 
         inputManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), showKeyboard ? InputMethodManager.SHOW_FORCED : InputMethodManager.HIDE_NOT_ALWAYS);
     }
-    @Override
-    public void onDetach() {
-        super.onDetach();
-
-        //hide keyboard when any fragment of this class has been detached
-        showSoftwareKeyboard(false);
-    }
+//    @Override
+//    public void onDetach() {
+//        super.onDetach();
+//
+//        //hide keyboard when any fragment of this class has been detached
+//        if()
+//            showSoftwareKeyboard(false);
+//    }
 
     @Override
     public void onItemClick(int item) {

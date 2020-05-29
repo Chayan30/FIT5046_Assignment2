@@ -106,10 +106,10 @@ public class HttpRequests {
         }
         return Response;
     }
+
     public static JSONObject httpPostRequest(JSONObject params) {
         URL url = null;
         HttpURLConnection conn = null;
-        String textResult = "";
         JSONObject Response = null;
         //Making HTTP request
         try {

@@ -45,6 +45,7 @@ public class AddToMemoir extends AppCompatActivity {
     float user_rating;
     String cinemaId;
     String personId;
+    Button addCinema;
     ArrayList<String> cinemaIds;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +75,13 @@ public class AddToMemoir extends AppCompatActivity {
         cinemaSpinner = findViewById(R.id.spinner_cinema_name);
         opinionEditText = findViewById(R.id.multi_line_text_opinion);
         userRatingBar = findViewById(R.id.userRatingBar);
+        addCinema = findViewById(R.id.button_new_cinema);
+        addCinema.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(AddToMemoir.this, AddNewCinema.class));
+            }
+        });
         addMemoirButton = findViewById(R.id.button_add_to_memoir);
         opinionEditText.setInputType(InputType.TYPE_CLASS_TEXT |
                                         InputType.TYPE_TEXT_FLAG_MULTI_LINE |
