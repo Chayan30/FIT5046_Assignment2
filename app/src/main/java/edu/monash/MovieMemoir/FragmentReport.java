@@ -1,5 +1,6 @@
 package edu.monash.MovieMemoir;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -33,8 +34,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.Objects;
 
 
 /**
@@ -46,22 +46,19 @@ public class FragmentReport extends Fragment {
         // Required empty public constructor
     }
 
-    PieChart pieChart;
-    DatePicker startDatePicker;
-    DatePicker endDatePicker;
-    PieDataSet pieDataSet;
-    ArrayList pieEntries;
-    ArrayList pieData;
-    ArrayList pieLabelData;
-    String start_date;
-    String end_date;
-    String personId;
-    BarChart barChart;
-    BarData barData;
-    BarDataSet barDataSet;
-    long pieTotalCount = 0;
-    ArrayList barEntries;
-    String[] barLabels = {"","January","February","March","April","May","June","July","August", "September", "October", "November", "December"};
+    private PieChart pieChart;
+    private DatePicker startDatePicker;
+    private DatePicker endDatePicker;
+    private ArrayList<PieEntry> pieEntries;
+    private ArrayList<Long> pieData;
+    private ArrayList<Integer> pieLabelData;
+    private String start_date;
+    private String end_date;
+    private String personId;
+    private BarChart barChart;
+    private long pieTotalCount = 0;
+    private ArrayList<BarEntry> barEntries;
+    private String[] barLabels = {"","January","February","March","April","May","June","July","August", "September", "October", "November", "December"};
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -70,7 +67,7 @@ public class FragmentReport extends Fragment {
         pieChart = root.findViewById(R.id.chart);
         startDatePicker = root.findViewById(R.id.datePickerStartDate);
         endDatePicker = root.findViewById(R.id.datePickerEndDate);
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("PersonId", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = Objects.requireNonNull(getContext()).getSharedPreferences("PersonId", Context.MODE_PRIVATE);
         personId = sharedPreferences.getString("pid","");
         Button get_chart = root.findViewById(R.id.button_make_chart);
         Button get_bar = root.findViewById(R.id.button_bar);
@@ -81,6 +78,7 @@ public class FragmentReport extends Fragment {
         get_chart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                pieChart.setVisibility(View.INVISIBLE);
                 barChart.setVisibility(View.INVISIBLE);
                 int start_day = startDatePicker.getDayOfMonth();
                 int start_month = startDatePicker.getMonth() + 1;
@@ -89,7 +87,7 @@ public class FragmentReport extends Fragment {
                 int end_month = endDatePicker.getMonth() + 1;
                 int end_year = endDatePicker.getYear();
                 start_date = ""+start_year+"-"+start_month+"-"+start_day+" 00:00:00.000";
-                end_date = ""+end_year+"-"+end_month+"-"+end_day+" 00:00:00.000";
+                end_date = ""+end_year+"-"+end_month+"-"+end_day+" 23:59:59.999";
                 getEntries();
 
             }
@@ -98,7 +96,8 @@ public class FragmentReport extends Fragment {
             @Override
             public void onClick(View v) {
                 pieChart.setVisibility(View.INVISIBLE);
-                barEntries = new ArrayList<>();
+                barChart.setVisibility(View.INVISIBLE);
+                barEntries = new ArrayList<BarEntry>();
                 String year = bar_spinner.getSelectedItem().toString();
                 getBarData getasyncTask = new getBarData();
                 getasyncTask.execute("findByMonthnameAndPersonIdAndYear/"+personId+"/"+year);
@@ -113,14 +112,15 @@ public class FragmentReport extends Fragment {
         getasyncTask.execute("findByPersonIdandWatchTimestamp/"+personId+"/"+start_date+"/"+end_date);
 
     }
+    @SuppressLint("StaticFieldLeak")
     private class getPieChartDate extends AsyncTask<String, Void, Void> {
         @Override
         protected Void doInBackground(String... params) {
             JSONArray response = HttpRequests.httpGetRequest("memoir", params[0]);
             if (response != null) {
                 pieTotalCount = 0;
-                pieData = new ArrayList();
-                pieLabelData = new ArrayList();
+                pieData = new ArrayList<>();
+                pieLabelData = new ArrayList<Integer>();
                 for (int i = 0; i < response.length(); i++) {
                     int postcode;
                     long mcount;
@@ -131,12 +131,12 @@ public class FragmentReport extends Fragment {
                         e.printStackTrace();
                     }
                     try {
+                        assert temp != null;
                         postcode = temp.getInt("PostCode");
                         mcount = temp.getLong("MovieCount");
                         pieData.add(mcount);
                         pieLabelData.add(postcode);
                         pieTotalCount += mcount;
-                        //pieEntries.add(new PieEntry(mcount,String.valueOf(postcode)));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -149,12 +149,12 @@ public class FragmentReport extends Fragment {
         protected void onPostExecute (Void response){
             for(int i = 0; i < pieData.size();i++)
             {
-                long data1 = (long)pieData.get(i);
+                long data1 = pieData.get(i);
                 double data = (((double)data1) / pieTotalCount) * 100;
                 Log.d("data",String.valueOf(data));
                 pieEntries.add(new PieEntry((long)data,String.valueOf(pieLabelData.get(i))));
             }
-            pieDataSet = new PieDataSet(pieEntries, " ");
+            PieDataSet pieDataSet = new PieDataSet(pieEntries, " ");
             pieDataSet.setColors(ColorTemplate.JOYFUL_COLORS);
             pieDataSet.setSliceSpace(2f);
             pieDataSet.setValueTextColor(Color.WHITE);
@@ -166,7 +166,7 @@ public class FragmentReport extends Fragment {
         }
 
     }
-    void addBarGraphData(String month, long mcount)
+    private void addBarGraphData(String month, long mcount)
     {
         switch (month)
         {
@@ -224,6 +224,7 @@ public class FragmentReport extends Fragment {
                         e.printStackTrace();
                     }
                     try {
+                        assert temp != null;
                         monthName = temp.getString("MonthName");
                         mcount = temp.getLong("MovieCount");
                         addBarGraphData(monthName,mcount);
@@ -238,8 +239,8 @@ public class FragmentReport extends Fragment {
         }
         @Override
         protected void onPostExecute (Void response){
-            barDataSet = new BarDataSet(barEntries,"");
-            barData = new BarData(barDataSet);
+            BarDataSet barDataSet = new BarDataSet(barEntries, "");
+            BarData barData = new BarData(barDataSet);
             barChart.setData(barData);
             barDataSet.setColors(ColorTemplate.JOYFUL_COLORS);
             barDataSet.setValueTextColor(Color.BLACK);

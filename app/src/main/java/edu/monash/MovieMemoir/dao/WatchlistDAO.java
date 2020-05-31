@@ -19,7 +19,8 @@ public interface WatchlistDAO {
     LiveData<List<Watchlist>> getAll();
     @Query("SELECT * FROM watchlist WHERE id = :id LIMIT 1")
     Watchlist findByID(String id);
-
+    @Query("SELECT * FROM watchlist")
+    List<Watchlist> getAllWatchlist();
     @Insert
     void insertAll(Watchlist... watchlist);
     @Insert
@@ -27,7 +28,7 @@ public interface WatchlistDAO {
     @Delete
     void delete(Watchlist watchlist);
     @Update(onConflict = REPLACE)
-    void updateCustomers(Watchlist... watchlist);
+    void updateWatchlist(Watchlist... watchlist);
     @Query("DELETE FROM watchlist")
     void deleteAll();
     @Query("DELETE FROM watchlist WHERE title = :title")

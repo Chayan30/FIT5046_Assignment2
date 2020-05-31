@@ -61,6 +61,13 @@
     <string name="memoir">Memoir</string>
     <string name="cinema_postcode">Cinema Postcode</string>
     <string name="report">Report</string>
+    <string name="filter">Filter</string>
+    <string name="sort">Sort</string>
+    <string name="start_watchlist_service">Start watchlist service</string>
+    <string name="stop_watchlist_service">Stop watchlist service</string>
+    <string name="make_chart">Make Chart</string>
+    <string name="start_date">Start Date</string>
+    <string name="make_bar">Make Bar</string>
     <string-array name="sort_array">
         <item>User Rating</item>
         <item>Public Rating</item>
@@ -74,5 +81,8 @@
         <item>2019</item>
         <item>2020</item>
     </string-array>
+    <string name="title_activity_maps">Map</string>
+    <string name="map">Map</string>
+    <string name="delete_all">Delete All</string>
 
 </resources>

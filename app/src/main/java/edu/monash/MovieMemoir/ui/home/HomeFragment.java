@@ -1,8 +1,11 @@
 package edu.monash.MovieMemoir.ui.home;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +18,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -42,6 +46,7 @@ import edu.monash.MovieMemoir.R;
 import edu.monash.MovieMemoir.Register;
 import edu.monash.MovieMemoir.database.PersonDatabase;
 import edu.monash.MovieMemoir.entity.Person;
+import edu.monash.MovieMemoir.ui.watchlist.WatchlistFragment;
 
 public class HomeFragment extends Fragment {
 
@@ -55,8 +60,9 @@ public class HomeFragment extends Fragment {
     String[] colHEAD = new String[] {"Movie Name","User Rating","Release Date"};
     int[] dataCell = new int[] {R.id.MovieName,R.id.UserRating,R.id.ReleaseDate};
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public View onCreateView(@NonNull LayoutInflater inflater,
-            ViewGroup container, Bundle savedInstanceState) {
+                             ViewGroup container, Bundle savedInstanceState) {
 //        homeViewModel =
 //                ViewModelProviders.of(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
@@ -71,6 +77,34 @@ public class HomeFragment extends Fragment {
         currentDate.setText(formmat1.format(ldt));
         SetNameTextAsyncTask asyncTask = new SetNameTextAsyncTask();
         asyncTask.execute();
+        String intentActionType = getActivity().getIntent().getAction();
+        AlertDialog.Builder watchlistDialog;
+        if (intentActionType != null) {
+            switch (intentActionType) {
+                case "OpenWatchList":
+                    String movieName = getActivity().getIntent().getStringExtra("Title");
+                    watchlistDialog = new AlertDialog.Builder(getActivity());
+                    watchlistDialog.setTitle("Watchlist Alert");
+                    watchlistDialog.setMessage("You added this movie 7 days ago. Want to check it out?");
+                    watchlistDialog.setPositiveButton("Ignore", new DialogInterface.OnClickListener(){
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+                    watchlistDialog.setNegativeButton("Ok", new DialogInterface.OnClickListener(){
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            WatchlistFragment watchlistFragment = new WatchlistFragment();
+                            getActivity().getSupportFragmentManager().beginTransaction()
+                                    .replace(getId(), watchlistFragment)
+                                    .addToBackStack(null)
+                                    .commit();
+                        }
+                    });
+                    watchlistDialog.show();
+            }
+        }
 
 //        homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
 //            @Override

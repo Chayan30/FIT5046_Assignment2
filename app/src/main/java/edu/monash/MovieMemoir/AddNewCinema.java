@@ -12,15 +12,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import edu.monash.MovieMemoir.database.CinemaDatabase;
+import edu.monash.MovieMemoir.entity.Cinema;
+
 public class AddNewCinema extends AppCompatActivity {
 
+    CinemaDatabase cinemaDatabase;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_cinema);
+        cinemaDatabase = CinemaDatabase.getInstance(this);
         getSupportActionBar().setTitle("Add Cinema"); // for set actionbar title
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         final EditText cinema_name_text = findViewById(R.id.editText_cinema_name);
@@ -67,6 +73,63 @@ public class AddNewCinema extends AppCompatActivity {
         });
     }
     private class CinemaAsyncTask extends AsyncTask<JSONObject, Void, JSONObject>
+    {
+        @Override
+        protected JSONObject doInBackground (JSONObject...params){
+            try {
+
+                JSONObject data = params[0].getJSONObject("data");
+                String cname = data.getString("cinema_name");
+                String postcode = data.getString("cinema_postcode");
+                String url = cname + " , " + postcode + " , australia";
+                String response = HttpRequests.getHTTPData(url);
+                String lat = "", lng = "";
+                JSONObject jsonObject = null;
+                jsonObject = new JSONObject(response);
+                Log.d("info", jsonObject.toString());
+                String status = jsonObject.getString("status");
+                if (!status.equalsIgnoreCase("ZERO_RESULTS"))
+                {
+                    lat = ((JSONArray) jsonObject.get("results")).getJSONObject(0).getJSONObject("geometry")
+                            .getJSONObject("location").get("lat").toString();
+                    lng = ((JSONArray) jsonObject.get("results")).getJSONObject(0).getJSONObject("geometry")
+                            .getJSONObject("location").get("lng").toString();
+                    Cinema cinema = new Cinema(cname + postcode, lat, lng);
+                    long userId = cinemaDatabase.cinemaDAO().insert(cinema);
+                    params[0].put("proper","true");
+                }
+                else
+                {
+                    params[0].put("proper","false");
+                }
+            }
+            catch (JSONException e)
+            {
+                e.printStackTrace();
+            }
+            return params[0];
+        }
+        @Override
+        protected void onPostExecute (JSONObject response) {
+            try {
+                String proper = response.getString("proper");
+                if (proper.equalsIgnoreCase("true")) {
+                    CinemaAsyncTask2 asyncTask = new CinemaAsyncTask2();
+                    asyncTask.execute(response);
+                }
+                else
+                {
+                    Toast.makeText(getApplicationContext(), "Please Enter Valid Cinema Details", Toast.LENGTH_SHORT).show();
+                }
+            }
+            catch (JSONException e)
+            {
+                e.printStackTrace();
+            }
+        }
+
+    }
+    private class CinemaAsyncTask2 extends AsyncTask<JSONObject, Void, JSONObject>
     {
         @Override
         protected JSONObject doInBackground (JSONObject...params){

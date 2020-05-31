@@ -152,7 +152,7 @@ public class MemoirFragment extends Fragment implements MemoirListAdapter.Recycl
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    String request = "?t=" + mname;
+                    String request = "?t=" + mname + "&y="+ releaseDate.substring(0,4);
                     JSONObject response1 = HttpRequests.httpMovieGetRequests(request);
                     String rating1 = null;
                     try {
@@ -160,7 +160,6 @@ public class MemoirFragment extends Fragment implements MemoirListAdapter.Recycl
                         poster = response1.getString("Poster");
                         rating1 = response1.getString("imdbRating");
                         String id = response1.getString("imdbID");
-                        Log.d("id", id);
                         IdList.add(id);
                         publicrating = Float.parseFloat(rating1);
                         publicrating = getRating(publicrating);
@@ -223,7 +222,7 @@ public class MemoirFragment extends Fragment implements MemoirListAdapter.Recycl
     }
     private void addList(){
         MemoirItemAdapter itemAdapter = new MemoirItemAdapter();
-        Log.d("memoirmname", mname);
+
         itemAdapter.setImage(poster);
         itemAdapter.setMname(mname);
         itemAdapter.setRyear(releaseDate);
@@ -236,7 +235,7 @@ public class MemoirFragment extends Fragment implements MemoirListAdapter.Recycl
         mList.add(itemAdapter);
     }
     private void adapter(){
-        Log.d("Adapter", "Reached Memoir adapter");
+
         mAdapter = new MemoirListAdapter(mList, getActivity(), this);
         mRecycleview.setAdapter(mAdapter);
         mAdapter.notifyDataSetChanged();

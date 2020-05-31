@@ -43,7 +43,9 @@
         android:layout_width="80dp"
         android:layout_height="44dp"
         android:layout_marginTop="24dp"
-        android:text="Sort"
+        android:textColor="@color/white"
+        android:background="@color/colorPrimaryDark"
+        android:text="@string/sort"
         app:layout_constraintStart_toEndOf="@+id/spinner_sort"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -52,7 +54,9 @@
         android:layout_width="80dp"
         android:layout_height="44dp"
         android:layout_marginTop="24dp"
-        android:text="Filter"
+        android:textColor="@color/white"
+        android:background="@color/colorPrimaryDark"
+        android:text="@string/filter"
         app:layout_constraintStart_toEndOf="@+id/spinner_filter"
         app:layout_constraintTop_toTopOf="parent" />
 

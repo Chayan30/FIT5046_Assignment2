@@ -60,6 +60,8 @@ public class MovieInfoView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(layout.activity_movie_info);
         watchlistDatabase = WatchlistDatabase.getInstance(this);
+        addWatchlist = findViewById(R.id.button_add_watch);
+        addMemoir = findViewById(R.id.button_add_memoir);
         text_genre = findViewById(id.genre_info);
         text_cast = findViewById(id.cast_info);
         text_rel_date = findViewById(id.rel_date_info);
@@ -68,6 +70,7 @@ public class MovieInfoView extends AppCompatActivity {
         text_plot = findViewById(id.plot_info);
         img_poster = findViewById(id.imageView_poster);
         ratingBar = findViewById(id.ratingBar);
+        ratingBar.setEnabled(false);
         title = getIntent().getStringExtra("title");
         progressBarWaitMovieInfo = findViewById(id.progressBarWaitMovieInfo);
         progressBarWaitMovieInfo.setVisibility(View.VISIBLE);
@@ -79,8 +82,7 @@ public class MovieInfoView extends AppCompatActivity {
         String request = "?i=" + Id;
         getMovieInfo movieinfo = new getMovieInfo();
         movieinfo.execute(request);
-        addWatchlist = findViewById(R.id.button_add_watch);
-        addMemoir = findViewById(R.id.button_add_memoir);
+
         addWatchlist.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("ResourceAsColor")
             @Override
@@ -147,15 +149,17 @@ public class MovieInfoView extends AppCompatActivity {
             float rating = 0;
             try {
                 genre = response.getString("Genre");
-                ryear = response.getString("Year");
+                ryear = response.getString("Released");
                 poster = response.getString("Poster");
                 cast = response.getString("Actors");
                 country = response.getString("Country");
                 director = response.getString("Director");
                 plot = response.getString("Plot");
                 rating1 = response.getString("imdbRating");
-                rating = Float.parseFloat(rating1);
-                rating = getRating(rating);
+                if(!rating1.equalsIgnoreCase("n/a")) {
+                    rating = Float.parseFloat(rating1);
+                    rating = getRating(rating);
+                }
                 Log.d("Genre", genre);
                 Log.d("Year", ryear);
                 Log.d("Poster", poster);

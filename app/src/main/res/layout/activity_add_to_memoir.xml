@@ -163,7 +163,7 @@
             android:layout_marginStart="24dp"
             android:text="@string/release_date"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/movie_name_text" />
+            app:layout_constraintTop_toTopOf="@+id/rel_date_info_text" />
 
         <TextView
             android:id="@+id/movie_name_info_text"

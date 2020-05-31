@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -60,9 +61,9 @@ public class Home extends AppCompatActivity {
         //setContentView(R.layout.nav_header_home);
         View header = navigationView.getHeaderView(0);
 
-
-        nameText = (TextView) header.findViewById(R.id.nameTextview);
         emailText = (TextView) header.findViewById(R.id.emailTextView);
+        ImageView img = header.findViewById(R.id.imageView);
+        img.setImageDrawable(getDrawable(R.drawable.movie));
         //setContentView(R.layout.activity_home);
         personDb = PersonDatabase.getInstance(this);
         SetNameTextAsyncTask asyncTask = new SetNameTextAsyncTask();
@@ -95,7 +96,6 @@ public class Home extends AppCompatActivity {
             SharedPreferences.Editor editor = sharedpreferences.edit();
             editor.putString("pid", pid);
             editor.apply();
-            nameText.setText(personName);
             emailText.setText(email);
             return null;
         }

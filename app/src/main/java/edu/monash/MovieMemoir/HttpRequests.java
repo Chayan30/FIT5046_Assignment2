@@ -18,6 +18,8 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.util.Scanner;
 
+import javax.net.ssl.HttpsURLConnection;
+
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -207,6 +209,42 @@ public class HttpRequests {
             conn.disconnect();
         }
         return Response;
+    }
+
+    public static String getHTTPData(String requestURL)
+    {
+        String base_url = "https://maps.googleapis.com/maps/api/geocode/json?address=%s";
+        URL url;
+        String response = "";
+        try{
+            url = new URL(base_url+requestURL+"&key=AIzaSyBJNDHub-_dAKA0g0bv1DBfkT1h1Wly55Q");
+            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setReadTimeout(15000);
+            conn.setConnectTimeout(15000);
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+            conn.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
+
+            int responseCode = conn.getResponseCode();
+            if(responseCode == HttpsURLConnection.HTTP_OK)
+            {
+                String line;
+                BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                while((line = br.readLine()) != null)
+                    response+=line;
+            }
+            else
+                response = "";
+
+        } catch (ProtocolException e) {
+            e.printStackTrace();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return response;
     }
 
 }

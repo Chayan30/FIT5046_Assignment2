@@ -14,6 +14,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -120,25 +121,38 @@ public class MovieSearchFragment extends Fragment implements ListAdapter.Recycle
             String ryear = null;
             String poster = null;
             String id = null;
+            String responseInfo = null;
             try {
-                int numResults = response.getInt("totalResults");
-                JSONArray searchResult = response.getJSONArray("Search");
-                for (int i = 0; i < searchResult.length(); i++) {
-                    JSONObject temp = null;
-                    temp = searchResult.getJSONObject(i);
-                    mname = temp.getString("Title");
-                    ryear = temp.getString("Year");
-                    poster = temp.getString("Poster");
-                    id = temp.getString("imdbID");
-                    Log.d("Title", mname);
-                    Log.d("Year",ryear);
-                    Log.d("Poster",poster);
-                    addList(mname,ryear,poster);
-                    idList.add(id);
-                }
-                adapter();
+                responseInfo = response.getString("Response");
             } catch (JSONException e) {
                 e.printStackTrace();
+            }
+            if(responseInfo.equalsIgnoreCase("True")) {
+                try {
+                    int numResults = response.getInt("totalResults");
+                    JSONArray searchResult = response.getJSONArray("Search");
+                    for (int i = 0; i < searchResult.length(); i++) {
+                        JSONObject temp = null;
+                        temp = searchResult.getJSONObject(i);
+                        mname = temp.getString("Title");
+                        ryear = temp.getString("Year");
+                        poster = temp.getString("Poster");
+                        id = temp.getString("imdbID");
+                        Log.d("Title", mname);
+                        Log.d("Year", ryear);
+                        Log.d("Poster", poster);
+                        addList(mname, ryear, poster);
+                        idList.add(id);
+                    }
+                    adapter();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            else
+            {
+                progressBarWaitMovieList.setVisibility(View.INVISIBLE);
+                Toast.makeText(root.getContext(), "Too many movies, Please Enter Proper words for result", Toast.LENGTH_SHORT).show();
             }
         }
     }

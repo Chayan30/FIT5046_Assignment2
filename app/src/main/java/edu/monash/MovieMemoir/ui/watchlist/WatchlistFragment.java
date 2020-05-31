@@ -1,12 +1,15 @@
 package edu.monash.MovieMemoir.ui.watchlist;
 
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +40,7 @@ import java.util.List;
 import edu.monash.MovieMemoir.HttpRequests;
 import edu.monash.MovieMemoir.MovieInfoView;
 import edu.monash.MovieMemoir.R;
+import edu.monash.MovieMemoir.WatchlistAlarmService;
 import edu.monash.MovieMemoir.database.WatchlistDatabase;
 import edu.monash.MovieMemoir.entity.Watchlist;
 import edu.monash.MovieMemoir.ui.movieSearch.ItemAdapter;
@@ -52,6 +56,8 @@ public class WatchlistFragment extends Fragment implements ListAdapter.RecyclerV
     private View root;
     private Button deleteButton;
     private Button viewButton;
+    private Button startServiceButton;
+    private Button stopServiceButton;
     private Boolean clear;
     public View onCreateView(@NonNull LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
@@ -72,7 +78,27 @@ public class WatchlistFragment extends Fragment implements ListAdapter.RecyclerV
         movieList.setLayoutManager(new LinearLayoutManager(getActivity()));
         deleteButton = root.findViewById(R.id.delete_button);
         viewButton = root.findViewById(R.id.view_button);
+        startServiceButton = root.findViewById(R.id.startServiceButton);
+        stopServiceButton = root.findViewById(R.id.stopServiceButton);
+        Button deleteAllButton = root.findViewById(R.id.button_delete_all);
         IdList = new ArrayList<>();
+        deleteAllButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(getContext())
+                        .setTitle("Confirm Delete")
+                        .setMessage("Do you really want to Delete everything?")
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setPositiveButton(android.R.string.no, null)
+                        .setNegativeButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                deleteAllWatchList asyncTask = new deleteAllWatchList();
+                                asyncTask.execute();
+                            }
+                        }).show();
+            }
+        });
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,7 +108,6 @@ public class WatchlistFragment extends Fragment implements ListAdapter.RecyclerV
                         selected++;
                     }
                 }
-                IdList = new ArrayList<>();
                 if( selected > 0) {
                     new AlertDialog.Builder(getContext())
                             .setTitle("Confirm Delete")
@@ -173,10 +198,31 @@ public class WatchlistFragment extends Fragment implements ListAdapter.RecyclerV
                     }
                 }
             });
+            startServiceButton.setOnClickListener(new View.OnClickListener(){
+
+                @Override
+                public void onClick(View v) {
+                    AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(getActivity().ALARM_SERVICE);
+                    Intent alarmIntent = new Intent(getActivity(), WatchlistAlarmService.class);
+                    PendingIntent pendingIntent = PendingIntent.getService(getActivity(), 0, alarmIntent, 0);
+                    alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), 1*60*1000, pendingIntent);
+                    Toast.makeText(getActivity(), "Service Started", Toast.LENGTH_SHORT).show();
+                }
+            });
+            stopServiceButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(getActivity().ALARM_SERVICE);
+                    Intent alarmIntent = new Intent(getActivity(), WatchlistAlarmService.class);
+                    PendingIntent pendingIntent = PendingIntent.getService(getActivity(), 0, alarmIntent, 0);
+                    alarmManager.cancel(pendingIntent);
+                    Toast.makeText(getActivity(), "Service Stopped", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
     private void addList(String movieName, String releaseYear, String poster){
-        Log.d("addList", "Added");
+
         ItemAdapter itemAdapter = new ItemAdapter();
         itemAdapter.setImage(poster);
         itemAdapter.setText(movieName);
@@ -184,7 +230,7 @@ public class WatchlistFragment extends Fragment implements ListAdapter.RecyclerV
         mList.add(itemAdapter);
     }
     private void adapter(){
-        Log.d("adapter", "Added");
+
         mAdapter = new ListAdapter(mList, getActivity(), this);
         movieList.setAdapter(mAdapter);
         mAdapter.notifyDataSetChanged();
@@ -200,6 +246,24 @@ public class WatchlistFragment extends Fragment implements ListAdapter.RecyclerV
                     watchlistDb.watchlistDao().deleteById(item.getText());
                 }
             }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void params)
+        {
+            if (clear)
+                mAdapter.clear();
+        }
+    }
+    @SuppressLint("StaticFieldLeak")
+    private class deleteAllWatchList extends AsyncTask<Void, Void, Void>
+    {
+        @Override
+        protected Void doInBackground (Void...params){
+            clear = true;
+
+            watchlistDb.watchlistDao().deleteAll();
+
             return null;
         }
         @Override

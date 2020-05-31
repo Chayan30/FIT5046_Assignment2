@@ -28,8 +28,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Objects;
+import java.util.SimpleTimeZone;
 
 public class AddToMemoir extends AppCompatActivity {
     DatePicker userWatchDate;
@@ -64,6 +68,7 @@ public class AddToMemoir extends AppCompatActivity {
         ImageView img_poster = findViewById(R.id.imageView_add_memoir_poster);
         mname.setText(title);
         relDate.setText(rel_year);
+
         Picasso.get()
                 .load(poster)
                 .placeholder(R.mipmap.ic_launcher)
@@ -71,11 +76,19 @@ public class AddToMemoir extends AppCompatActivity {
                 .centerInside()
                 .into(img_poster);
         userWatchDate = findViewById(R.id.datePickerUserWatchDate);
+        try {
+            Date rel_Date = new SimpleDateFormat("dd MMM yyyy").parse(rel_year);
+            userWatchDate.setMinDate(rel_Date.getTime());
+            userWatchDate.setMaxDate(new Date().getTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         userWatchTime = findViewById(R.id.timePickerUserWatchDate);
         cinemaSpinner = findViewById(R.id.spinner_cinema_name);
         opinionEditText = findViewById(R.id.multi_line_text_opinion);
         userRatingBar = findViewById(R.id.userRatingBar);
         addCinema = findViewById(R.id.button_new_cinema);
+
         addCinema.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -126,6 +139,7 @@ public class AddToMemoir extends AppCompatActivity {
             }
         });
     }
+
     private class fillCinemaSpinner extends AsyncTask<String, Void, JSONArray>
     {
         @Override
@@ -158,7 +172,7 @@ public class AddToMemoir extends AppCompatActivity {
                     cinemaIds.add(cid);
                     arrayList.add(cname +" "+ postcode);
                 }
-                ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getApplication(), android.R.layout.simple_spinner_item, arrayList);
+                ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getApplication(), R.layout.add_to_memoir_spinner, arrayList);
                 arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 cinemaSpinner.setAdapter(arrayAdapter);
             }

@@ -19,10 +19,12 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.common.hash.Hashing;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -96,7 +98,10 @@ public class Register extends AppCompatActivity {
                 JSONObject registerPostDataObject = new JSONObject();
                 JSONObject registerData = new JSONObject();
                 email = String.valueOf(username.getText());
-                password1 = password.getText().toString();
+                String unhashed_password = password.getText().toString();
+                password1 = Hashing.sha256()
+                        .hashString(unhashed_password, StandardCharsets.UTF_8)
+                        .toString();
                 firstname = firstName.getText().toString();
                 surname1 = surname.getText().toString();
                 address1 = address.getText().toString();
@@ -120,7 +125,6 @@ public class Register extends AppCompatActivity {
                 }
                 if(error == false) {
                     Register.RegisterAsyncTask addAsyncTask = new Register.RegisterAsyncTask();
-
                     addAsyncTask.execute(registerPostDataObject);
                 }
             }

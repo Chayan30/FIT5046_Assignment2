@@ -13,15 +13,18 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 
 
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.common.hash.Hashing;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import edu.monash.MovieMemoir.database.PersonDatabase;
@@ -37,11 +40,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         personDb = PersonDatabase.getInstance(this);
         CheckUserLoginAsyncTask task = new CheckUserLoginAsyncTask();
-        Log.d("reached", "reached");
+
         task.execute();
         final TextInputLayout username = findViewById(R.id.outlinedTextField);
         final EditText username1 = username.getEditText();
-        Log.d("username", username1.getText().toString());
         final TextInputLayout Password = findViewById(R.id.outlinedPasswordTextField);
         final EditText password = Password.getEditText();
         Button signUpButton = (Button)findViewById(R.id.signUpButton);
@@ -62,7 +64,12 @@ public class MainActivity extends AppCompatActivity {
                 JSONObject loginData = new JSONObject();
                 String email = String.valueOf(username1.getText());
                 Log.d("username", email);
-                String password1 = password.getText().toString();
+                String unhashed_password = password.getText().toString();
+                Log.d("unhashPassword", unhashed_password);
+                String password1 = Hashing.sha256()
+                        .hashString(unhashed_password, StandardCharsets.UTF_8)
+                        .toString();
+                Log.d("hashPassword", password1);
                 try{
                     loginData.put("email", email);
                     loginData.put("password", password1);
@@ -140,8 +147,8 @@ public class MainActivity extends AppCompatActivity {
     }
     protected void moveToHomeAfterLogin(){
         Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_SHORT).show();
-        Log.d("MOVE", "MOVING TO HOME NOW");
         startActivity(new Intent(MainActivity.this, Home.class));
+        finish();
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -164,8 +171,18 @@ public class MainActivity extends AppCompatActivity {
         }
         @Override
         protected void onPostExecute(String s) {
-            if (!s.isEmpty())
-                startActivity(new Intent(MainActivity.this, Home.class));
+            if (!s.isEmpty()) {
+                String action = getIntent().getAction();
+                String mname = getIntent().getStringExtra("Title");
+                Intent home_intent = new Intent(MainActivity.this, Home.class);
+                if(action != null)
+                {
+                    home_intent.setAction(action);
+                    home_intent.putExtra("Title", mname);
+                }
+                startActivity(home_intent);
+                finish();
+            }
         }
     }
 
